@@ -27,3 +27,6 @@ export async function simplifyWithFallback(documentText: string, invoke: (prompt
   try { return { data: await invoke(buildSimplifyPrompt(documentText)), fallback: false }; }
   catch { return { data: heuristicSimplification(documentText), fallback: true }; }
 }
+export interface ComparisonResult { summary: string; differences: Array<{ clause: string; docA: string; docB: string; significance: "cosmetic" | "material" | "critical" }>; }
+export function buildComparePrompt(textA: string, textB: string): string { return `Compare ONLY these two legal documents. Return valid JSON only: {"summary":"string","differences":[{"clause":"string","docA":"string","docB":"string","significance":"cosmetic|material|critical"}]}. Never invent differences; mark a difference critical only when it changes a material obligation, deadline, remedy, liability, or money.\nDOCUMENT A:\n${textA}\nDOCUMENT B:\n${textB}`; }
+export async function compareWithFallback(textA: string, textB: string, invoke: (prompt: string) => Promise<ComparisonResult>): Promise<{ data: ComparisonResult; fallback: boolean }> { try { return { data: await invoke(buildComparePrompt(textA, textB)), fallback: false }; } catch { return { data: { summary: "Comparison service is temporarily unavailable. Review the two originals side by side.", differences: [] }, fallback: true }; } }

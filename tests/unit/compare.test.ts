@@ -1,0 +1,2 @@
+import { describe, expect, it, vi } from "vitest"; import { buildComparePrompt, compareWithFallback } from "../../src/lib/gemini";
+describe("comparison",()=>{it("creates a structured grounded prompt",()=>{expect(buildComparePrompt("A","B")).toContain("significance" );});it("falls back on Gemini failure",async()=>{const result=await compareWithFallback("A text that is long enough.","B text that is long enough.",vi.fn().mockRejectedValue(new Error("x")));expect(result.fallback).toBe(true);});});
