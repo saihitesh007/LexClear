@@ -1,17 +1,2 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { z } from "zod";
-import { allowRequest, parseBody, postOnly } from "./_shared";
-import { translateText } from "./services";
-
-const input = z.object({ text: z.string().min(1).max(20_000), target: z.enum(["hi", "ta", "te", "bn", "mr"]) });
-
-export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
-  if (!postOnly(req, res) || !allowRequest(req, res)) return;
-  const body = parseBody(input, req, res);
-  if (!body) return;
-  try {
-    res.status(200).json({ data: await translateText(body.text, body.target) });
-  } catch {
-    res.status(200).json({ data: body.text, warning: "Translation is temporarily unavailable; showing the English version." });
-  }
-}
+import type {VercelRequest,VercelResponse} from "@vercel/node";import {translateSchema} from "../src/lib/schemas";import {translate,translateWithFallback} from "../src/lib/translate";import {allowRequest,parseBody,postOnly} from "./_shared";
+export default async function handler(req:VercelRequest,res:VercelResponse):Promise<void>{if(!postOnly(req,res)||!allowRequest(req,res))return;const body=parseBody(translateSchema,req,res);if(!body)return;const result=await translateWithFallback(body.text,body.target,async(text,target)=>{const key=process.env.GOOGLE_TRANSLATE_KEY;if(!key)throw new Error();return translate(text,target,key);});res.status(200).json({data:result.text,fallback:result.fallback,warning:result.fallback?"Translation is unavailable; showing English.":undefined});}
