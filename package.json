@@ -12,14 +12,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "mammoth": "^1.12.3",
+    "pdf-parse": "^1.1.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
     "@playwright/test": "^1.52.0",
+    "@tailwindcss/vite": "^4.1.4",
     "@types/node": "^22.15.3",
     "@vercel/node": "^5.1.0",
-    "@tailwindcss/vite": "^4.1.4",
     "axe-core": "^4.10.3",
     "playwright": "^1.52.0",
     "tailwindcss": "^4.1.4",
