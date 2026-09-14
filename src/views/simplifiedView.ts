@@ -1,13 +1,3 @@
-import type { SimplifiedResult } from "../lib/gemini";
-
-export function renderSimplifiedView(container: HTMLElement, data: SimplifiedResult): void {
-  container.hidden = false;
-  container.replaceChildren();
-  const heading = document.createElement("h2"); heading.className = "text-2xl font-bold"; heading.textContent = "In plain language";
-  const text = document.createElement("p"); text.className = "mt-3 whitespace-pre-wrap leading-7"; text.textContent = data.simplifiedText;
-  const pointsTitle = document.createElement("h3"); pointsTitle.className = "mt-6 text-lg font-bold"; pointsTitle.textContent = "Key points";
-  const points = document.createElement("ul"); points.className = "mt-2 list-disc space-y-2 pl-5";
-  data.keyPoints.forEach((point) => { const item = document.createElement("li"); item.textContent = point; points.append(item); });
-  container.append(heading, text, pointsTitle, points);
-  if (data.caveats.length) { const caveat = document.createElement("aside"); caveat.className = "mt-6 rounded-lg border border-amber-300/50 bg-amber-100/10 p-4 text-amber-50"; caveat.setAttribute("aria-label", "Uncertain source wording"); caveat.innerHTML = "<strong>Uncertain or incomplete wording</strong>"; const list = document.createElement("ul"); list.className = "mt-2 list-disc pl-5"; data.caveats.forEach((entry) => { const item = document.createElement("li"); item.textContent = entry; list.append(item); }); caveat.append(list); container.append(caveat); }
-}
+import type { SimplifiedResult } from "../lib/gemini"; import { classifyClauses, type ClauseRisk } from "../lib/riskScoring";
+export function renderRiskBadge(level: ClauseRisk): HTMLSpanElement { const badge=document.createElement("span");badge.className="ml-2 rounded px-2 py-1 text-xs "+(level==="high"?"bg-rose-500/30":level==="medium"?"bg-amber-400/30":"bg-teal-400/20");badge.textContent=level+" risk";return badge; }
+export function renderSimplifiedView(container: HTMLElement,data:SimplifiedResult):void{container.hidden=false;container.replaceChildren();const h=document.createElement("h2");h.className="text-2xl font-bold";h.textContent="In plain language";const text=document.createElement("p");text.className="mt-3 whitespace-pre-wrap leading-7";text.textContent=data.simplifiedText;const ul=document.createElement("ul");ul.className="mt-5 space-y-2";classifyClauses(data).forEach(entry=>{const li=document.createElement("li");li.textContent=entry.point;li.append(renderRiskBadge(entry.level));ul.append(li);});container.append(h,text,ul);if(data.glossary?.length){const g=document.createElement("section");g.innerHTML="<h3 class=\"mt-6 text-lg font-bold\">Glossary</h3>";data.glossary.forEach(item=>{const d=document.createElement("details");d.className="mt-2";d.innerHTML="<summary>"+item.term+"</summary><p class=\"mt-1 text-slate-300\"></p>";d.querySelector("p")!.textContent=item.definition;g.append(d);});container.append(g);}if(data.caveats.length){const a=document.createElement("aside");a.className="mt-6 rounded-lg border border-amber-300/50 bg-amber-100/10 p-4 text-amber-50";a.textContent="Uncertain: "+data.caveats.join(" ");container.append(a);}}
