@@ -5,6 +5,7 @@ export interface SimplifiedResult {
   glossary?: Array<{ term: string; definition: string }>;
 }
 
+// Enforces source-only simplification and a machine-readable response contract.
 export function buildSimplifyPrompt(documentText: string): string {
   return `You are LexClear, a careful legal-information assistant. Rewrite ONLY the supplied document in plain language at approximately an 8th-grade reading level. Preserve every legal obligation, deadline, condition, and monetary figure exactly. Never invent a clause, fact, or interpretation not supported by the source. If any wording is ambiguous or damaged, describe the uncertainty in caveats rather than guessing. Return valid JSON only, with exactly this shape: {"simplifiedText":"string","keyPoints":["string"],"caveats":["string"],"glossary":[{"term":"string","definition":"string"}]}.
 
@@ -58,6 +59,7 @@ export interface ComparisonResult {
   differences: Array<{ clause: string; docA: string; docB: string; significance: "cosmetic" | "material" | "critical" }>;
 }
 
+// Constrains comparison output to source-backed, significance-tagged differences.
 export function buildComparePrompt(textA: string, textB: string): string {
   return `Compare ONLY these two legal documents. Return valid JSON only: {"summary":"string","differences":[{"clause":"string","docA":"string","docB":"string","significance":"cosmetic|material|critical"}]}. Never invent differences; mark a difference critical only when it changes a material obligation, deadline, remedy, liability, or money.
 DOCUMENT A:
@@ -78,6 +80,7 @@ export async function compareWithFallback(
   }
 }
 
+// Prevents outside legal knowledge from entering document-grounded answers.
 export function buildChatPrompt(
   documentText: string,
   question: string,
