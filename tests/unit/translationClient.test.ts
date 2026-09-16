@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { translateResult } from "../../src/views/simplifiedView";
+import { translateResult } from "../../src/lib/translationClient";
 
 const result = { simplifiedText: "Summary", keyPoints: ["Point"], caveats: ["Caveat"], glossary: [{ term: "Term", definition: "Definition" }] };
 const response = (text: string) => new Response(JSON.stringify({ data: text }));
