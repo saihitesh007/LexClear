@@ -39,6 +39,3 @@ export function parseBody<T>(schema: ZodType<T>, req: VercelRequest, res: Vercel
   }
 }
 
-export function jsonError(res: VercelResponse, message: string, status = 500): void {
-  res.status(status).json({ error: message });
-}
