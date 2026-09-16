@@ -30,7 +30,7 @@ describe("compareView", () => {
 
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({ data: mockComparisonResult }),
+      json: () => Promise.resolve({ data: mockComparisonResult }),
     });
     vi.stubGlobal("fetch", mockFetch);
 
@@ -61,8 +61,9 @@ describe("compareView", () => {
   it("handles API failure gracefully with fallback message", async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
-      json: async () => ({ error: "Comparison service error" }),
+      json: () => Promise.resolve({ error: "Comparison service error" }),
     });
+
     vi.stubGlobal("fetch", mockFetch);
 
     await mountCompareView(host, "Doc A", "Doc B");

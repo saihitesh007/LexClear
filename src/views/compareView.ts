@@ -60,8 +60,7 @@ export async function mountCompareView(
 
     payload.data.differences.forEach((item) => {
       const card = document.createElement("article");
-      card.className =
-        "mt-4 rounded-xl border-l-4 p-5 " + significanceClass[item.significance];
+      card.className = "mt-4 rounded-xl border-l-4 p-5 " + significanceClass[item.significance];
 
       const label = document.createElement("strong");
       label.className = "text-white";

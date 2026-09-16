@@ -50,9 +50,7 @@ export function wireUpload(
       };
 
       if (!response.ok || !payload.data) {
-        throw new Error(
-          payload.error ?? "Couldn't read this document — try a clearer scan."
-        );
+        throw new Error(payload.error ?? "Couldn't read this document — try a clearer scan.");
       }
 
       setStatus("Simplifying…");
@@ -84,12 +82,12 @@ export function wireUpload(
 
   dropZone.addEventListener("drop", (event) => {
     const file = event.dataTransfer?.files[0];
-    process(file);
+    void process(file);
   });
 
   fileInput.addEventListener("change", () => {
     const file = fileInput.files?.[0];
-    process(file);
+    void process(file);
   });
 }
 
@@ -97,13 +95,13 @@ function toBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
-      const resultStr = String(reader.result);
-      const base64Data = resultStr.includes(",")
-        ? resultStr.split(",")[1]
-        : resultStr;
+      const resultStr = typeof reader.result === "string" ? reader.result : "";
+      const base64Data = resultStr.includes(",") ? resultStr.split(",")[1] : resultStr;
       resolve(base64Data);
     };
-    reader.onerror = (error) => reject(error);
+    reader.onerror = () => {
+      reject(new Error("Failed to read file"));
+    };
     reader.readAsDataURL(file);
   });
 }

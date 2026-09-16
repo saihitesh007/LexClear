@@ -3,6 +3,7 @@ export interface SimplifiedResult {
   keyPoints: string[];
   caveats: string[];
   glossary?: Array<{ term: string; definition: string }>;
+  summary?: string;
 }
 
 // Enforces source-only simplification and a machine-readable response contract.
@@ -14,32 +15,55 @@ ${documentText}`;
 }
 
 export async function callGeminiJson<T>(prompt: string, apiKey: string): Promise<T> {
-  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + encodeURIComponent(apiKey), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0.15 } }),
-    signal: AbortSignal.timeout(15_000)
-  });
+  const response = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" +
+      encodeURIComponent(apiKey),
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json", temperature: 0.15 },
+      }),
+      signal: AbortSignal.timeout(15_000),
+    }
+  );
   if (!response.ok) throw new Error("Gemini request failed");
 
-  const body = await response.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+  const body = (await response.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
   const text = body.candidates?.[0]?.content?.parts?.map((part) => part.text ?? "").join("");
   if (!text) throw new Error("Gemini returned no content");
   return JSON.parse(text) as T;
 }
 
 export function heuristicSimplification(documentText: string): SimplifiedResult {
-  const sentences = documentText.replace(/\s+/g, " ").trim().match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [];
+  const sentences =
+    documentText
+      .replace(/\s+/g, " ")
+      .trim()
+      .match(/[^.!?]+[.!?]+|[^.!?]+$/g) ?? [];
   const keyPoints = sentences
-    .filter((sentence) => /\b(shall|must|may not|pay|fee|renew|terminat|deadline|within|indemn|liability)\b/i.test(sentence))
+    .filter((sentence) =>
+      /\b(shall|must|may not|pay|fee|renew|terminat|deadline|within|indemn|liability)\b/i.test(
+        sentence
+      )
+    )
     .slice(0, 6)
     .map((sentence) => sentence.trim());
 
   return {
-    simplifiedText: sentences.slice(0, 8).join(" ").trim() || "We could not extract enough readable text to simplify this document.",
-    keyPoints: keyPoints.length ? keyPoints : sentences.slice(0, 3).map((sentence) => sentence.trim()),
-    caveats: ["AI simplification is temporarily unavailable; this is a sentence-level fallback. Review the original document carefully."],
-    glossary: []
+    simplifiedText:
+      sentences.slice(0, 8).join(" ").trim() ||
+      "We could not extract enough readable text to simplify this document.",
+    keyPoints: keyPoints.length
+      ? keyPoints
+      : sentences.slice(0, 3).map((sentence) => sentence.trim()),
+    caveats: [
+      "AI simplification is temporarily unavailable; this is a sentence-level fallback. Review the original document carefully.",
+    ],
+    glossary: [],
   };
 }
 
@@ -56,7 +80,12 @@ export async function simplifyWithFallback(
 
 export interface ComparisonResult {
   summary: string;
-  differences: Array<{ clause: string; docA: string; docB: string; significance: "cosmetic" | "material" | "critical" }>;
+  differences: Array<{
+    clause: string;
+    docA: string;
+    docB: string;
+    significance: "cosmetic" | "material" | "critical";
+  }>;
 }
 
 // Constrains comparison output to source-backed, significance-tagged differences.
@@ -76,7 +105,14 @@ export async function compareWithFallback(
   try {
     return { data: await invoke(buildComparePrompt(textA, textB)), fallback: false };
   } catch {
-    return { data: { summary: "Comparison service is temporarily unavailable. Review the two originals side by side.", differences: [] }, fallback: true };
+    return {
+      data: {
+        summary:
+          "Comparison service is temporarily unavailable. Review the two originals side by side.",
+        differences: [],
+      },
+      fallback: true,
+    };
   }
 }
 

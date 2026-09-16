@@ -29,9 +29,10 @@ describe("chatPanel view", () => {
 
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        data: "According to the document, it auto-renews on January 1st.",
-      }),
+      json: () =>
+        Promise.resolve({
+          data: "According to the document, it auto-renews on January 1st.",
+        }),
     });
     vi.stubGlobal("fetch", mockFetch);
 
@@ -44,11 +45,12 @@ describe("chatPanel view", () => {
       "/api/chat",
       expect.objectContaining({
         method: "POST",
-        body: expect.stringContaining("When does the agreement renew?"),
+        body: expect.stringContaining("When does the agreement renew?") as unknown,
       })
     );
 
-    const messages = host.querySelector("#messages");
+    const messages = host.querySelector<HTMLElement>("#messages");
+
     expect(messages?.textContent).toContain("When does the agreement renew?");
     expect(messages?.textContent).toContain(
       "According to the document, it auto-renews on January 1st."

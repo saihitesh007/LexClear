@@ -3,11 +3,13 @@ import { z } from "zod";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { allowRequest, postOnly, parseBody } from "../../api/_shared";
 
-function createMockReqRes(options: {
-  method?: string;
-  headers?: Record<string, string | string[]>;
-  body?: unknown;
-} = {}) {
+function createMockReqRes(
+  options: {
+    method?: string;
+    headers?: Record<string, string | string[]>;
+    body?: unknown;
+  } = {}
+) {
   const req = {
     method: options.method ?? "POST",
     headers: options.headers ?? {},

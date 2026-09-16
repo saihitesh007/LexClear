@@ -1,0 +1,205 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for src/views/shell.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/views</a> shell.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>19/19</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">66.66% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>2/3</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>2/2</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>19/19</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">export interface AppShell {
+  dropZone: HTMLElement;
+  fileInput: HTMLInputElement;
+  ingestionStatus: HTMLElement;
+  results: HTMLElement;
+  chatHost: HTMLElement;
+  compareDropZone: HTMLElement;
+  compareFileInput: HTMLInputElement;
+  compareStatus: HTMLElement;
+  compareHost: HTMLElement;
+}
+&nbsp;
+export function renderShell(app: HTMLElement): AppShell {
+  app.innerHTML = `
+    &lt;header class="border-b border-white/10"&gt;&lt;nav class="mx-auto flex max-w-5xl items-center justify-between px-5 py-5" aria-label="Main navigation"&gt;&lt;a href="/" class="text-xl font-black tracking-tight text-white"&gt;Lex&lt;span class="text-teal-300"&gt;Clear&lt;/span&gt;&lt;/a&gt;&lt;span class="rounded-full border border-teal-300/20 bg-teal-300/10 px-3 py-1 text-xs font-semibold text-teal-100"&gt;Private by design · no saved documents&lt;/span&gt;&lt;/nav&gt;&lt;/header&gt;
+    &lt;main id="main-content" class="mx-auto max-w-5xl px-5 py-10 sm:py-16"&gt;
+      &lt;section class="grid gap-8 lg:grid-cols-[1.2fr_.8fr] lg:items-end"&gt;&lt;div&gt;&lt;p class="text-sm font-bold uppercase tracking-[.18em] text-teal-300"&gt;Legal information, made usable&lt;/p&gt;&lt;h1 class="mt-4 max-w-3xl text-4xl font-black tracking-tight text-white sm:text-6xl"&gt;Read the fine print with confidence.&lt;/h1&gt;&lt;p class="mt-5 max-w-2xl text-lg leading-8 text-slate-300"&gt;Upload a legal document. LexClear explains it in plain language, surfaces key risks, and keeps every question grounded in the document itself.&lt;/p&gt;&lt;/div&gt;&lt;aside class="rounded-2xl border border-white/10 bg-slate-900/70 p-5 shadow-2xl shadow-cyan-950/20"&gt;&lt;p class="text-sm font-bold text-teal-200"&gt;Built for real documents&lt;/p&gt;&lt;ul class="mt-3 space-y-2 text-sm leading-6 text-slate-300"&gt;&lt;li&gt;PDF &amp; DOCX text extraction&lt;/li&gt;&lt;li&gt;OCR for scans and photos&lt;/li&gt;&lt;li&gt;Translation into your language&lt;/li&gt;&lt;/ul&gt;&lt;/aside&gt;&lt;/section&gt;
+      &lt;section class="mt-10 rounded-3xl border border-white/10 bg-slate-900/75 p-5 shadow-2xl shadow-black/20 sm:p-8"&gt;&lt;div class="flex flex-wrap items-start justify-between gap-4"&gt;&lt;div&gt;&lt;h2 class="text-2xl font-bold text-white"&gt;Start with a document&lt;/h2&gt;&lt;p class="mt-1 text-slate-400"&gt;PDF, DOCX, PNG, or JPG · up to 10 MB&lt;/p&gt;&lt;/div&gt;&lt;span class="rounded-full bg-slate-800 px-3 py-1 text-xs font-medium text-slate-300"&gt;No account required&lt;/span&gt;&lt;/div&gt;&lt;label id="drop-zone" for="document-file" class="mt-6 block cursor-pointer rounded-2xl border-2 border-dashed border-slate-600 bg-slate-950/50 p-10 text-center transition duration-200 hover:border-teal-300 hover:bg-teal-300/5"&gt;&lt;span class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-teal-300/10 text-2xl text-teal-200" aria-hidden="true"&gt;↑&lt;/span&gt;&lt;strong class="mt-4 block text-lg text-white"&gt;Drop your document here&lt;/strong&gt;&lt;span class="mt-1 block text-sm text-slate-400"&gt;or choose a file from your device&lt;/span&gt;&lt;/label&gt;&lt;input id="document-file" class="sr-only" type="file" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg"&gt;&lt;p id="ingestion-status" class="mt-4 min-h-6 text-sm text-slate-300" role="status" aria-live="polite"&gt;&lt;/p&gt;&lt;/section&gt;
+      &lt;section id="results" class="mt-10" hidden&gt;&lt;/section&gt;&lt;section id="chat-host"&gt;&lt;/section&gt;
+      &lt;details class="mt-8 rounded-2xl border border-white/10 bg-slate-900/60 p-5"&gt;&lt;summary class="cursor-pointer font-bold text-teal-200"&gt;Compare a second document &lt;span class="ml-1 text-sm font-normal text-slate-400"&gt;Optional — load only when needed&lt;/span&gt;&lt;/summary&gt;&lt;div class="mt-5 border-t border-white/10 pt-5"&gt;&lt;label id="compare-drop-zone" for="compare-file" class="block cursor-pointer rounded-xl border border-dashed border-slate-600 p-6 text-center transition hover:border-teal-300 hover:bg-teal-300/5"&gt;&lt;strong class="text-white"&gt;Drop or choose the second document&lt;/strong&gt;&lt;span class="mt-1 block text-sm text-slate-400"&gt;It will be compared against your first document.&lt;/span&gt;&lt;/label&gt;&lt;input id="compare-file" class="sr-only" type="file" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg"&gt;&lt;p id="compare-status" class="mt-3 min-h-6 text-sm text-slate-300" role="status" aria-live="polite"&gt;&lt;/p&gt;&lt;/div&gt;&lt;/details&gt;&lt;div id="compare-host"&gt;&lt;/div&gt;
+    &lt;/main&gt;&lt;footer class="mx-auto max-w-5xl px-5 pb-10 text-sm leading-6 text-slate-400"&gt;LexClear explains documents in plain language. It is not a substitute for legal advice.&lt;/footer&gt;`;
+&nbsp;
+  return {
+    dropZone: required(app, "#drop-zone"),
+    fileInput: required(app, "#document-file"),
+    ingestionStatus: required(app, "#ingestion-status"),
+    results: required(app, "#results"),
+    chatHost: required(app, "#chat-host"),
+    compareDropZone: required(app, "#compare-drop-zone"),
+    compareFileInput: required(app, "#compare-file"),
+    compareStatus: required(app, "#compare-status"),
+    compareHost: required(app, "#compare-host"),
+  };
+}
+&nbsp;
+function required&lt;T extends Element&gt;(parent: HTMLElement, selector: string): T {
+  const element = parent.querySelector&lt;T&gt;(selector);
+  if (!element) <span class="branch-0 cbranch-no" title="branch not covered" >throw new Error("Shell is missing " + selector);</span>
+  return element;
+}
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-09-16T17:40:52.649Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

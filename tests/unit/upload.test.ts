@@ -30,7 +30,7 @@ describe("upload view", () => {
     expect(dropZone.classList.contains("drop-active")).toBe(false);
   });
 
-  it("shows error for unsupported file type", async () => {
+  it("shows error for unsupported file type", () => {
     wireUpload(dropZone, fileInput, status, callbacks);
 
     const file = new File(["dummy content"], "test.exe", {
@@ -43,14 +43,12 @@ describe("upload view", () => {
 
     fileInput.dispatchEvent(new Event("change"));
 
-    expect(status.textContent).toBe(
-      "Choose a PDF, DOCX, PNG, or JPG under 10 MB."
-    );
+    expect(status.textContent).toBe("Choose a PDF, DOCX, PNG, or JPG under 10 MB.");
     expect(status.dataset.state).toBe("error");
     expect(callbacks.onText).not.toHaveBeenCalled();
   });
 
-  it("shows error for file size > 10MB", async () => {
+  it("shows error for file size > 10MB", () => {
     wireUpload(dropZone, fileInput, status, callbacks);
 
     const bigFile = new File(["a"], "big.pdf", { type: "application/pdf" });
@@ -62,9 +60,7 @@ describe("upload view", () => {
 
     fileInput.dispatchEvent(new Event("change"));
 
-    expect(status.textContent).toBe(
-      "Choose a PDF, DOCX, PNG, or JPG under 10 MB."
-    );
+    expect(status.textContent).toBe("Choose a PDF, DOCX, PNG, or JPG under 10 MB.");
     expect(status.dataset.state).toBe("error");
     expect(callbacks.onText).not.toHaveBeenCalled();
   });
@@ -82,9 +78,10 @@ describe("upload view", () => {
 
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: async () => ({
-        data: { text: "Extracted legal document text", ocrUsed: false },
-      }),
+      json: () =>
+        Promise.resolve({
+          data: { text: "Extracted legal document text", ocrUsed: false },
+        }),
     });
     vi.stubGlobal("fetch", mockFetch);
 
@@ -117,8 +114,9 @@ describe("upload view", () => {
 
     const mockFetch = vi.fn().mockResolvedValue({
       ok: false,
-      json: async () => ({ error: "OCR processing error" }),
+      json: () => Promise.resolve({ error: "OCR processing error" }),
     });
+
     vi.stubGlobal("fetch", mockFetch);
 
     fileInput.dispatchEvent(new Event("change"));

@@ -29,7 +29,7 @@ export function renderShell(app: HTMLElement): AppShell {
     compareDropZone: required(app, "#compare-drop-zone"),
     compareFileInput: required(app, "#compare-file"),
     compareStatus: required(app, "#compare-status"),
-    compareHost: required(app, "#compare-host")
+    compareHost: required(app, "#compare-host"),
   };
 }
 

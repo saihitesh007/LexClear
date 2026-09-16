@@ -11,9 +11,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   try {
     const key = process.env.GEMINI_API_KEY;
     if (!key) throw new Error("Gemini is not configured");
-    const raw = await callGeminiJson<{ answer: string }>(buildChatPrompt(body.documentText, body.question, (body.history ?? [])), key);
+    const raw = await callGeminiJson<{ answer: string }>(
+      buildChatPrompt(body.documentText, body.question, body.history ?? []),
+      key
+    );
     res.status(200).json({ data: raw.answer });
   } catch {
-    res.status(200).json({ data: "Assistant unavailable. Please review the document directly; this is general information, not legal advice.", fallback: true });
+    res
+      .status(200)
+      .json({
+        data: "Assistant unavailable. Please review the document directly; this is general information, not legal advice.",
+        fallback: true,
+      });
   }
 }

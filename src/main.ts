@@ -14,13 +14,17 @@ let firstText = "";
 wireUpload(shell.dropZone, shell.fileInput, shell.ingestionStatus, {
   onText: async (text) => {
     firstText = text;
-    const response = await fetch("/api/simplify", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: "Uploaded document", text }) });
-    const payload = await response.json() as { data?: SimplifiedResult; error?: string };
+    const response = await fetch("/api/simplify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: "Uploaded document", text }),
+    });
+    const payload = (await response.json()) as { data?: SimplifiedResult; error?: string };
     if (!response.ok || !payload.data) throw new Error(payload.error ?? "Simplification failed");
     renderSimplifiedView(shell.results, payload.data);
     mountChatPanel(shell.chatHost, text);
     shell.results.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
+  },
 });
 
 wireUpload(shell.compareDropZone, shell.compareFileInput, shell.compareStatus, {
@@ -28,5 +32,5 @@ wireUpload(shell.compareDropZone, shell.compareFileInput, shell.compareStatus, {
     if (!firstText) throw new Error("Upload the primary document before adding one to compare.");
     const view = await import("./views/compareView");
     await view.mountCompareView(shell.compareHost, firstText, secondText);
-  }
+  },
 });

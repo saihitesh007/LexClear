@@ -41,27 +41,26 @@ Document text and service credentials are processed server-side. The SPA contain
 
 ## Evaluation Focus
 
-| Criterion | Implementation |
-| --- | --- |
-| Code quality | Typed, framework-free view modules; isolated business logic in `src/lib`; shared Zod API schemas. |
-| Security | Server-only unprefixed credentials, Zod request validation, size/type bounds, timeouts, basic rate limiting, and no client key exposure. |
-| Efficiency | Text limits, 10 MB file validation, deterministic local risk scoring, and dynamically imported comparison UI. |
-| Testing | Vitest covers parsing, Gemini prompts/fallbacks, risk scoring, translation fallback, shared API utilities, and view components (shell, upload, simplifiedView, compareView, chatPanel). Playwright includes two axe scans plus an upload → simplify → chat happy path. |
+| Criterion    | Implementation                                                                                                                                                                                                                                                         |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Code quality | Typed, framework-free view modules; isolated business logic in `src/lib`; shared Zod API schemas.                                                                                                                                                                      |
+| Security     | Server-only unprefixed credentials, Zod request validation, size/type bounds, timeouts, basic rate limiting, and no client key exposure.                                                                                                                               |
+| Efficiency   | Text limits, 10 MB file validation, deterministic local risk scoring, and dynamically imported comparison UI.                                                                                                                                                          |
+| Testing      | Vitest covers parsing, Gemini prompts/fallbacks, risk scoring, translation fallback, shared API utilities, and view components (shell, upload, simplifiedView, compareView, chatPanel). Playwright includes two axe scans plus an upload → simplify → chat happy path. |
 
 | Accessibility | Semantic controls, live status updates, keyboard-native details glossary, visible focus styles, labelled select/input controls, and axe coverage. |
 | Google services | Gemini drives simplification, comparison, and grounded Q&A; Vision handles OCR fallback; Translation localizes output. |
 | Lightweight-ness | Vanilla Vite/TypeScript with no UI framework. Current browser JS: **15.12 kB main / 5.45 kB gzip**; comparison is a separate **2.53 kB / 1.07 kB gzip** lazy chunk. |
 
-
 ## Service fallback matrix
 
-| Service/feature | Graceful fallback |
-| --- | --- |
-| PDF/DOCX extraction and Vision OCR | Clear error: “Couldn't read this document — try a clearer scan.” |
-| Gemini simplification | Heuristic sentence-level summary and visible caveat. |
-| Gemini comparison | Unavailable summary with no invented differences. |
-| Grounded Q&A | Clear assistant-unavailable message and legal-information disclaimer. |
-| Cloud Translation | Original English text stays visible with a translation-unavailable notice. |
+| Service/feature                    | Graceful fallback                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| PDF/DOCX extraction and Vision OCR | Clear error: “Couldn't read this document — try a clearer scan.”           |
+| Gemini simplification              | Heuristic sentence-level summary and visible caveat.                       |
+| Gemini comparison                  | Unavailable summary with no invented differences.                          |
+| Grounded Q&A                       | Clear assistant-unavailable message and legal-information disclaimer.      |
+| Cloud Translation                  | Original English text stays visible with a translation-unavailable notice. |
 
 ## Verify before submission
 

@@ -1,8 +1,6 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import {
-  renderRiskBadge,
-  renderSimplifiedView,
-} from "../../src/views/simplifiedView";
+import { describe, it, expect, beforeEach } from "vitest";
+
+import { renderRiskBadge, renderSimplifiedView } from "../../src/views/simplifiedView";
 import type { SimplifiedResult } from "../../src/lib/gemini";
 
 describe("simplifiedView", () => {
@@ -16,12 +14,9 @@ describe("simplifiedView", () => {
       "Automatic renewal annually",
       "Liability uncapped for breach",
     ],
-    glossary: [
-      { term: "License", definition: "Permission to use software." },
-    ],
+    glossary: [{ term: "License", definition: "Permission to use software." }],
     caveats: ["Clause 4 is ambiguous."],
   };
-
 
   beforeEach(() => {
     container = document.createElement("div");

@@ -17,6 +17,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   res.status(200).json({
     data: result.text,
     fallback: result.fallback,
-    warning: result.fallback ? "Translation is unavailable; showing English." : undefined
+    warning: result.fallback ? "Translation is unavailable; showing English." : undefined,
   });
 }

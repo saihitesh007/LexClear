@@ -7,7 +7,8 @@ const MAX_REQUESTS = 15;
 
 export function allowRequest(req: VercelRequest, res: VercelResponse): boolean {
   const forwarded = req.headers["x-forwarded-for"];
-  const ip = (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(",")[0]?.trim() ?? "unknown";
+  const ip =
+    (Array.isArray(forwarded) ? forwarded[0] : forwarded)?.split(",")[0]?.trim() ?? "unknown";
   const now = Date.now();
   const record = visits.get(ip);
   if (!record || record.resetAt < now) {
@@ -29,13 +30,19 @@ export function postOnly(req: VercelRequest, res: VercelResponse): boolean {
   return false;
 }
 
-export function parseBody<T>(schema: ZodType<T>, req: VercelRequest, res: VercelResponse): T | null {
+export function parseBody<T>(
+  schema: ZodType<T>,
+  req: VercelRequest,
+  res: VercelResponse
+): T | null {
   try {
     return schema.parse(req.body);
   } catch (error) {
-    const message = error instanceof ZodError ? error.issues.map((issue) => issue.message).join("; ") : "Invalid request";
+    const message =
+      error instanceof ZodError
+        ? error.issues.map((issue) => issue.message).join("; ")
+        : "Invalid request";
     res.status(400).json({ error: message });
     return null;
   }
 }
-
