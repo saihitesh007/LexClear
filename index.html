@@ -1,9 +1,14 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="description" content="Plain-language legal document guidance." /><title>LexClear — understand your legal document</title></head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Plain-language legal document guidance." />
+    <title>LexClear — understand your legal document</title>
+  </head>
   <body class="bg-slate-950 text-slate-100">
-    <a class="skip-link" href="#main-content">Skip to main content</a>
-    <main id="app"><section id="upload-zone" aria-label="Upload legal document"><label id="drop-zone" for="document-file">Drop PDF, DOCX, PNG, or JPG here</label><input id="document-file" type="file" accept="application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg" /><p id="ingestion-status" role="status" aria-live="polite"></p></section><section id="result-containers" hidden></section><aside id="chat-panel" hidden></aside></main>
+    <a class="skip-link sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-slate-900 focus:text-white" href="#main-content">Skip to main content</a>
+    <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

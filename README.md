@@ -46,10 +46,12 @@ Document text and service credentials are processed server-side. The SPA contain
 | Code quality | Typed, framework-free view modules; isolated business logic in `src/lib`; shared Zod API schemas. |
 | Security | Server-only unprefixed credentials, Zod request validation, size/type bounds, timeouts, basic rate limiting, and no client key exposure. |
 | Efficiency | Text limits, 10 MB file validation, deterministic local risk scoring, and dynamically imported comparison UI. |
-| Testing | Vitest covers parsing, Gemini prompts/fallbacks, risk scoring, and translation fallback. Playwright includes two axe scans plus an upload → simplify → chat happy path. |
+| Testing | Vitest covers parsing, Gemini prompts/fallbacks, risk scoring, translation fallback, shared API utilities, and view components (shell, upload, simplifiedView, compareView, chatPanel). Playwright includes two axe scans plus an upload → simplify → chat happy path. |
+
 | Accessibility | Semantic controls, live status updates, keyboard-native details glossary, visible focus styles, labelled select/input controls, and axe coverage. |
 | Google services | Gemini drives simplification, comparison, and grounded Q&A; Vision handles OCR fallback; Translation localizes output. |
-| Lightweight-ness | Vanilla Vite/TypeScript with no UI framework. Current browser JS: **7.73 kB main / 3.20 kB gzip**; comparison is a separate **1.44 kB / 0.71 kB gzip** lazy chunk. |
+| Lightweight-ness | Vanilla Vite/TypeScript with no UI framework. Current browser JS: **15.12 kB main / 5.45 kB gzip**; comparison is a separate **2.53 kB / 1.07 kB gzip** lazy chunk. |
+
 
 ## Service fallback matrix
 
