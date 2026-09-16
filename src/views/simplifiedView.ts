@@ -132,11 +132,13 @@ async function translateText(text: string, target: string): Promise<TranslationR
   }
 }
 
-async function translateResult(result: SimplifiedResult, target: string): Promise<TranslatedResult> {
-  const glossaryResults = await Promise.all((result.glossary ?? []).map(async (item) => ({ term: item.term, definition: await translateText(item.definition, target) })));
-  const summary = await translateText(result.simplifiedText, target);
-  const keyPoints = await Promise.all(result.keyPoints.map((item) => translateText(item, target)));
-  const caveats = await Promise.all(result.caveats.map((item) => translateText(item, target)));
+export async function translateResult(result: SimplifiedResult, target: string): Promise<TranslatedResult> {
+  // Each request has its own fallback, so these independent calls can run together safely.
+  const glossaryTask = Promise.all((result.glossary ?? []).map(async (item) => ({ term: item.term, definition: await translateText(item.definition, target) })));
+  const summaryTask = translateText(result.simplifiedText, target);
+  const keyPointsTask = Promise.all(result.keyPoints.map((item) => translateText(item, target)));
+  const caveatsTask = Promise.all(result.caveats.map((item) => translateText(item, target)));
+  const [glossaryResults, summary, keyPoints, caveats] = await Promise.all([glossaryTask, summaryTask, keyPointsTask, caveatsTask]);
   const responses = [summary, ...keyPoints, ...caveats, ...glossaryResults.map((item) => item.definition)];
 
   return {
