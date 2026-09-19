@@ -1,9 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import {
-  callGeminiJson,
-  compareWithFallback,
-  type ComparisonResult,
-} from "../src/lib/gemini";
+import { callGeminiJson, compareWithFallback, type ComparisonResult } from "../src/lib/gemini";
 import { compareSchema } from "../src/lib/schemas";
 import { allowRequest, parseBody, postOnly } from "./_shared";
 import { RequestCache } from "./_cache";
@@ -13,10 +9,7 @@ export const compareCache = new RequestCache<{
   fallback: boolean;
 }>();
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-): Promise<void> {
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!postOnly(req, res) || !allowRequest(req, res)) return;
   const body = parseBody(compareSchema, req, res);
   if (!body) return;
@@ -28,15 +21,11 @@ export default async function handler(
     return;
   }
 
-  const result = await compareWithFallback(
-    body.first,
-    body.second,
-    async (prompt) => {
-      const apiKey = process.env.GEMINI_API_KEY;
-      if (!apiKey) throw new Error("Gemini is not configured");
-      return callGeminiJson<ComparisonResult>(prompt, apiKey);
-    }
-  );
+  const result = await compareWithFallback(body.first, body.second, async (prompt) => {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) throw new Error("Gemini is not configured");
+    return callGeminiJson<ComparisonResult>(prompt, apiKey);
+  });
 
   if (!result.fallback) {
     compareCache.set(key, result);

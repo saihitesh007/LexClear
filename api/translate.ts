@@ -8,14 +8,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   const body = parseBody(translateSchema, req, res);
   if (!body) return;
 
-  const result = await translateWithFallback(body.text, body.target, async (text, target) => {
+  const result = await translateWithFallback(body.texts, body.target, async (texts, target) => {
     const key = process.env.GOOGLE_TRANSLATE_KEY;
     if (!key) throw new Error("Translation is not configured");
-    return translate(text, target, key);
+    return translate(texts, target, key);
   });
 
   res.status(200).json({
-    data: result.text,
+    data: result.texts,
     fallback: result.fallback,
     warning: result.fallback ? "Translation is unavailable; showing English." : undefined,
   });

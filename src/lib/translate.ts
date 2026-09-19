@@ -1,10 +1,15 @@
-export async function translate(text: string, targetLang: string, apiKey: string): Promise<string> {
+export async function translate(
+  texts: string[],
+  targetLang: string,
+  apiKey: string
+): Promise<string[]> {
+  if (texts.length === 0) return [];
   const response = await fetch(
     "https://translation.googleapis.com/language/translate/v2?key=" + encodeURIComponent(apiKey),
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ q: text, target: targetLang, format: "text" }),
+      body: JSON.stringify({ q: texts, target: targetLang, format: "text" }),
       signal: AbortSignal.timeout(15_000),
     }
   );
@@ -13,17 +18,21 @@ export async function translate(text: string, targetLang: string, apiKey: string
   const body = (await response.json()) as {
     data?: { translations?: Array<{ translatedText?: string }> };
   };
-  return body.data?.translations?.[0]?.translatedText ?? text;
+  const translations = body.data?.translations;
+  if (!translations || translations.length !== texts.length) {
+    throw new Error("Invalid translation response");
+  }
+  return translations.map((item, index) => item.translatedText ?? texts[index]);
 }
 
 export async function translateWithFallback(
-  text: string,
+  texts: string[],
   targetLang: string,
-  invoke: (text: string, target: string) => Promise<string>
-): Promise<{ text: string; fallback: boolean }> {
+  invoke: (texts: string[], target: string) => Promise<string[]>
+): Promise<{ texts: string[]; fallback: boolean }> {
   try {
-    return { text: await invoke(text, targetLang), fallback: false };
+    return { texts: await invoke(texts, targetLang), fallback: false };
   } catch {
-    return { text, fallback: true };
+    return { texts, fallback: true };
   }
 }

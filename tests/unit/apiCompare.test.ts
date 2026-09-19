@@ -42,9 +42,7 @@ describe("api/compare", () => {
       summary: "Summary of changes",
       differences: [],
     };
-    vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue(
-      mockComparisonResult
-    );
+    vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue(mockComparisonResult);
 
     const { req, res, getStatus, getJson } = createMockReqRes({
       first: "First document content text for comparison",

@@ -107,9 +107,7 @@ describe("api/ocr", () => {
   });
 
   it("returns 422 when processing fails", async () => {
-    vi.spyOn(parseDocModule, "parseDocument").mockRejectedValue(
-      new Error("Parse failure")
-    );
+    vi.spyOn(parseDocModule, "parseDocument").mockRejectedValue(new Error("Parse failure"));
 
     const { req, res, getStatus, getJson } = createMockReqRes({
       title: "corrupt.pdf",

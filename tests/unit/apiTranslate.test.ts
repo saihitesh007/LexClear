@@ -37,10 +37,10 @@ describe("api/translate", () => {
   });
 
   it("translates text using translate function", async () => {
-    vi.spyOn(translateModule, "translate").mockResolvedValue("Translated text");
+    vi.spyOn(translateModule, "translate").mockResolvedValue(["Translated text"]);
 
     const { req, res, getStatus, getJson } = createMockReqRes({
-      text: "English text to translate",
+      texts: ["English text to translate"],
       target: "hi",
     });
 
@@ -48,7 +48,7 @@ describe("api/translate", () => {
 
     expect(getStatus()).toBe(200);
     expect(getJson()).toEqual({
-      data: "Translated text",
+      data: ["Translated text"],
       fallback: false,
       warning: undefined,
     });
@@ -58,7 +58,7 @@ describe("api/translate", () => {
     delete process.env.GOOGLE_TRANSLATE_KEY;
 
     const { req, res, getStatus, getJson } = createMockReqRes({
-      text: "English text to translate",
+      texts: ["English text to translate"],
       target: "hi",
     });
 
@@ -66,7 +66,7 @@ describe("api/translate", () => {
 
     expect(getStatus()).toBe(200);
     expect(getJson()).toEqual({
-      data: "English text to translate",
+      data: ["English text to translate"],
       fallback: true,
       warning: "Translation is unavailable; showing English.",
     });

@@ -26,13 +26,11 @@ async function mockDocumentFlow(page: import("@playwright/test").Page): Promise<
 async function loadResult(page: import("@playwright/test").Page): Promise<void> {
   await mockDocumentFlow(page);
   await page.goto("/");
-  await page
-    .locator("#document-file")
-    .setInputFiles({
-      name: "lease.pdf",
-      mimeType: "application/pdf",
-      buffer: Buffer.from("sample"),
-    });
+  await page.locator("#document-file").setInputFiles({
+    name: "lease.pdf",
+    mimeType: "application/pdf",
+    buffer: Buffer.from("sample"),
+  });
   await expect(page.getByRole("heading", { name: "In plain language" })).toBeVisible();
 }
 
@@ -52,6 +50,7 @@ test("simplified result has no serious accessibility violations", async ({ page 
 });
 test("happy path uploads, simplifies, and answers a grounded question", async ({ page }) => {
   await loadResult(page);
+  await page.getByText("Ask about this document").click();
   await page.getByLabel("Your question about this document").fill("When is payment due?");
   await page.getByRole("button", { name: "Ask" }).click();
   await expect(

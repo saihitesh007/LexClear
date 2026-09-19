@@ -17,11 +17,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     );
     res.status(200).json({ data: raw.answer });
   } catch {
-    res
-      .status(200)
-      .json({
-        data: "Assistant unavailable. Please review the document directly; this is general information, not legal advice.",
-        fallback: true,
-      });
+    res.status(200).json({
+      data: "Assistant unavailable. Please review the document directly; this is general information, not legal advice.",
+      fallback: true,
+    });
   }
 }

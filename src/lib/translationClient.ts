@@ -1,10 +1,12 @@
 import type { SimplifiedResult } from "./gemini";
 
 type Glossary = NonNullable<SimplifiedResult["glossary"]>;
+
 interface TranslationResponse {
-  text: string;
+  texts: string[];
   fallback: boolean;
 }
+
 export interface TranslatedResult {
   data: SimplifiedResult;
   fallback: boolean;
@@ -27,20 +29,26 @@ export function cacheTranslation(
   translationCache.set(target + ":" + sourceText, translated);
 }
 
-async function translateText(text: string, target: string): Promise<TranslationResponse> {
+async function translateTexts(texts: string[], target: string): Promise<TranslationResponse> {
+  if (texts.length === 0) {
+    return { texts: [], fallback: false };
+  }
   try {
     const response = await fetch("/api/translate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, target }),
+      body: JSON.stringify({ texts, target }),
     });
-    const payload = (await response.json()) as { data?: string; fallback?: boolean };
+    const payload = (await response.json()) as {
+      data?: string[];
+      fallback?: boolean;
+    };
     return {
-      text: payload.data ?? text,
+      texts: payload.data ?? texts,
       fallback: !response.ok || payload.fallback === true || !payload.data,
     };
   } catch {
-    return { text, fallback: true };
+    return { texts, fallback: true };
   }
 }
 
@@ -48,41 +56,40 @@ export async function translateResult(
   result: SimplifiedResult,
   target: string
 ): Promise<TranslatedResult> {
-  // Each request has its own fallback, so these independent calls can run together safely.
-  const glossaryTask = Promise.all(
-    (result.glossary ?? []).map(async (item) => ({
-      term: item.term,
-      definition: await translateText(item.definition, target),
-    }))
-  );
-  const summaryTask = translateText(result.simplifiedText, target);
-  const keyPointsTask = Promise.all(result.keyPoints.map((item) => translateText(item, target)));
-  const caveatsTask = Promise.all(result.caveats.map((item) => translateText(item, target)));
-  const [glossaryResults, summary, keyPoints, caveats] = await Promise.all([
-    glossaryTask,
-    summaryTask,
-    keyPointsTask,
-    caveatsTask,
-  ]);
-  const responses = [
-    summary,
-    ...keyPoints,
-    ...caveats,
-    ...glossaryResults.map((item) => item.definition),
+  const glossary = result.glossary ?? [];
+  const allTexts: string[] = [
+    result.simplifiedText,
+    ...result.keyPoints,
+    ...result.caveats,
+    ...glossary.map((item) => item.definition),
   ];
-  const glossary: Glossary = glossaryResults.map((item) => ({
+
+  const translationRes = await translateTexts(allTexts, target);
+  const translatedTexts = translationRes.texts;
+  const fallback = translationRes.fallback;
+
+  let cursor = 0;
+  const simplifiedText = translatedTexts[cursor++] ?? result.simplifiedText;
+
+  const keyPoints = result.keyPoints.map((original, i) => translatedTexts[cursor + i] ?? original);
+  cursor += result.keyPoints.length;
+
+  const caveats = result.caveats.map((original, i) => translatedTexts[cursor + i] ?? original);
+  cursor += result.caveats.length;
+
+  const translatedGlossary: Glossary = glossary.map((item, i) => ({
     term: item.term,
-    definition: item.definition.text,
+    definition: translatedTexts[cursor + i] ?? item.definition,
   }));
 
   return {
     data: {
       ...result,
-      simplifiedText: summary.text,
-      keyPoints: keyPoints.map((item) => item.text),
-      caveats: caveats.map((item) => item.text),
-      glossary,
+      simplifiedText,
+      keyPoints,
+      caveats,
+      glossary: translatedGlossary,
     },
-    fallback: responses.some((item) => item.fallback),
+    fallback,
   };
 }

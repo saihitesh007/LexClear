@@ -1,10 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { simplifySchema } from "../src/lib/schemas";
-import {
-  callGeminiJson,
-  simplifyWithFallback,
-  type SimplifiedResult,
-} from "../src/lib/gemini";
+import { callGeminiJson, simplifyWithFallback, type SimplifiedResult } from "../src/lib/gemini";
 import { allowRequest, parseBody, postOnly } from "./_shared";
 import { RequestCache } from "./_cache";
 
@@ -13,10 +9,7 @@ export const simplifyCache = new RequestCache<{
   fallback: boolean;
 }>();
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-): Promise<void> {
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
   if (!postOnly(req, res) || !allowRequest(req, res)) return;
   const body = parseBody(simplifySchema, req, res);
   if (!body) return;

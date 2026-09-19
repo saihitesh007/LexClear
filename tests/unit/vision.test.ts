@@ -36,8 +36,6 @@ describe("vision.ts", () => {
     });
     vi.stubGlobal("fetch", mockFetch);
 
-    await expect(runVisionOcr("base64data", "bad-key")).rejects.toThrow(
-      "Vision request failed"
-    );
+    await expect(runVisionOcr("base64data", "bad-key")).rejects.toThrow("Vision request failed");
   });
 });
