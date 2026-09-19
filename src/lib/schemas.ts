@@ -6,14 +6,19 @@ export const simplifySchema = z.object({
   text: documentTextSchema,
 });
 export const compareSchema = z.object({ first: documentTextSchema, second: documentTextSchema });
-export const chatSchema = z.object({
-  documentText: documentTextSchema,
-  question: z.string().trim().min(3).max(500),
-  history: z
-    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(1_000) }))
-    .max(8)
-    .default([]),
-});
+export const chatSchema = z
+  .object({
+    documentText: documentTextSchema.optional(),
+    documentHash: z.string().trim().min(1).max(64).optional(),
+    question: z.string().trim().min(3).max(500),
+    history: z
+      .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string().max(1_000) }))
+      .max(8)
+      .default([]),
+  })
+  .refine((data) => data.documentText !== undefined || data.documentHash !== undefined, {
+    message: "Either documentText or documentHash must be provided",
+  });
 export const translateSchema = z.object({
   texts: z.array(z.string().trim().min(1).max(20_000)).min(1).max(100),
   target: z.enum(["hi", "ta", "te", "bn", "mr"]),

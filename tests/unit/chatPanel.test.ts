@@ -18,43 +18,59 @@ describe("chatPanel view", () => {
     expect(host.querySelector("#chat-submit")).not.toBeNull();
   });
 
-  it("submits question, sends request to /api/chat, and renders assistant response", async () => {
+  it("submits first question with documentText, and subsequent question with documentHash only", async () => {
     const documentText = "This agreement auto-renews on January 1st each year.";
     mountChatPanel(host, documentText);
 
     const input = host.querySelector<HTMLInputElement>("#chat-input")!;
     const form = host.querySelector<HTMLFormElement>("#chat-form")!;
 
-    input.value = "When does the agreement renew?";
-
-    const mockFetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          data: "According to the document, it auto-renews on January 1st.",
-        }),
-    });
+    const mockFetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: "According to the document, it auto-renews on January 1st.",
+          }),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            data: "No notice period is required.",
+          }),
+      });
     vi.stubGlobal("fetch", mockFetch);
 
-    const submitEvent = new Event("submit", { cancelable: true });
-    form.dispatchEvent(submitEvent);
-
+    input.value = "When does the agreement renew?";
+    form.dispatchEvent(new Event("submit", { cancelable: true }));
     await new Promise((resolve) => setTimeout(resolve, 50));
 
-    expect(mockFetch).toHaveBeenCalledWith(
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      1,
       "/api/chat",
       expect.objectContaining({
         method: "POST",
-        body: expect.stringContaining("When does the agreement renew?") as unknown,
+        body: expect.stringContaining("documentText") as unknown,
+      })
+    );
+
+    input.value = "Is there a notice period?";
+    form.dispatchEvent(new Event("submit", { cancelable: true }));
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(mockFetch).toHaveBeenNthCalledWith(
+      2,
+      "/api/chat",
+      expect.objectContaining({
+        method: "POST",
+        body: expect.not.stringContaining("documentText") as unknown,
       })
     );
 
     const messages = host.querySelector<HTMLElement>("#messages");
-
-    expect(messages?.textContent).toContain("When does the agreement renew?");
-    expect(messages?.textContent).toContain(
-      "According to the document, it auto-renews on January 1st."
-    );
+    expect(messages?.textContent).toContain("No notice period is required.");
   });
 
   it("handles fetch error gracefully", async () => {

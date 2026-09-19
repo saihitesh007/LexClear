@@ -36,7 +36,7 @@ describe("api/chat", () => {
     process.env.GEMINI_API_KEY = "test-key";
   });
 
-  it("answers question using Gemini when key is present", async () => {
+  it("answers question using Gemini and caches document text on first request", async () => {
     vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue({
       answer: "Answer text",
     });
@@ -50,7 +50,69 @@ describe("api/chat", () => {
     await chatHandler(req, res);
 
     expect(getStatus()).toBe(200);
-    expect(getJson()).toEqual({ data: "Answer text" });
+    expect(getJson()).toEqual(
+      expect.objectContaining({
+        data: "Answer text",
+        documentHash: expect.any(String) as unknown,
+      })
+    );
+  });
+
+  it("allows subsequent question using documentHash without resending full documentText", async () => {
+    vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue({
+      answer: "First answer",
+    });
+
+    const documentText = "Unique legal document text for caching test 12345.";
+
+    const firstReq = createMockReqRes({
+      documentText,
+      documentHash: "hash-12345",
+      question: "First question?",
+      history: [],
+    });
+
+    await chatHandler(firstReq.req, firstReq.res);
+    expect(firstReq.getStatus()).toBe(200);
+
+    vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue({
+      answer: "Second answer from cached document",
+    });
+
+    const secondReq = createMockReqRes({
+      documentHash: "hash-12345",
+      question: "Second question without text?",
+      history: [],
+    });
+
+    await chatHandler(secondReq.req, secondReq.res);
+
+    expect(secondReq.getStatus()).toBe(200);
+    expect(secondReq.getJson()).toEqual({
+      data: "Second answer from cached document",
+      documentHash: "hash-12345",
+    });
+
+    expect(geminiModule.callGeminiJson).toHaveBeenCalledWith(
+      expect.stringContaining("Unique legal document text for caching test 12345."),
+      "test-key"
+    );
+  });
+
+  it("returns cacheMiss error when documentHash is not found in server cache", async () => {
+    const { req, res, getStatus, getJson } = createMockReqRes({
+      documentHash: "non-existent-hash",
+      question: "Is this cached?",
+      history: [],
+    });
+
+    await chatHandler(req, res);
+
+    expect(getStatus()).toBe(400);
+    expect(getJson()).toEqual({
+      error: "Document not found in cache. Resend full documentText.",
+      cacheMiss: true,
+    });
   });
 
   it("returns fallback message when Gemini key is missing or fails", async () => {

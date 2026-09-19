@@ -1,7 +1,18 @@
 type Message = { role: "You" | "LexClear"; content: string };
 
+function hashDocumentText(text: string): string {
+  let hash = 5381;
+  for (let i = 0; i < text.length; i++) {
+    hash = (hash * 33) ^ text.charCodeAt(i);
+  }
+  return (hash >>> 0).toString(16);
+}
+
 export function mountChatPanel(host: HTMLElement, documentText: string): void {
   const history: Array<{ role: "user" | "assistant"; content: string }> = [];
+  const documentHash = hashDocumentText(documentText);
+  let isCached = false;
+
   host.innerHTML =
     '<details class="mt-6 rounded-2xl border border-white/10 bg-slate-900/75 p-5"><summary class="cursor-pointer text-lg font-bold text-white">Ask about this document <span class="ml-2 text-sm font-normal text-teal-200">Grounded Q&A</span></summary><div id="messages" class="mt-5 space-y-3" aria-live="polite"></div><form id="chat-form" class="mt-5 border-t border-white/10 pt-4"><p class="mb-3 text-xs leading-5 text-slate-400">General information only — not legal advice. Answers use the document you uploaded, not outside legal knowledge.</p><div class="flex gap-2"><label class="sr-only" for="chat-input">Your question about this document</label><input id="chat-input" class="min-w-0 flex-1 rounded-lg border border-slate-600 bg-slate-950 p-3 text-slate-100" placeholder="What does the renewal clause mean?" required><button id="chat-submit" class="rounded-lg bg-teal-300 px-4 font-bold text-slate-950 transition hover:bg-teal-200">Ask</button></div></form></details>';
 
@@ -36,15 +47,32 @@ export function mountChatPanel(host: HTMLElement, documentText: string): void {
     append({ role: "You", content: question });
     history.push({ role: "user", content: question });
 
-    try {
+    const postChat = async (useHashOnly: boolean) => {
+      const bodyPayload = useHashOnly
+        ? { documentHash, question, history }
+        : { documentText, documentHash, question, history };
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ documentText, question, history }),
+        body: JSON.stringify(bodyPayload),
       });
-      const payload = (await response.json()) as { data?: string };
-      const answer = payload.data ?? "Assistant unavailable. Please review the document directly.";
+      const payload = (await response.json()) as { data?: string; cacheMiss?: boolean };
+      return { ok: response.ok, payload };
+    };
+
+    try {
+      let res = await postChat(isCached);
+      if (!res.ok && res.payload.cacheMiss && isCached) {
+        isCached = false;
+        res = await postChat(false);
+      }
+
+      const answer =
+        res.payload.data ?? "Assistant unavailable. Please review the document directly.";
       append({ role: "LexClear", content: answer });
+      if (res.ok && !res.payload.cacheMiss) {
+        isCached = true;
+      }
       history.push({ role: "assistant", content: answer });
     } catch {
       append({
