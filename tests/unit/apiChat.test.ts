@@ -132,4 +132,26 @@ describe("api/chat", () => {
       fallback: true,
     });
   });
+
+  it("returns 400 cacheMiss when body passes schema validation with a hash but the hash resolves to nothing", async () => {
+    // documentHash passes schema but the docCache lookup returns undefined
+    // which falls through to the "Missing document text or valid hash" branch
+    vi.spyOn(geminiModule, "callGeminiJson").mockResolvedValue({ answer: "ok" });
+
+    const { req, res, getStatus, getJson } = createMockReqRes({
+      // Provide a hash that was never cached (fresh handler state)
+      documentHash: "deadbeef00000001",
+      question: "When does the lease terminate?",
+      history: [],
+    });
+
+    await chatHandler(req, res);
+
+    // The server should return cache miss
+    expect(getStatus()).toBe(400);
+    expect(getJson()).toEqual({
+      error: "Document not found in cache. Resend full documentText.",
+      cacheMiss: true,
+    });
+  });
 });
